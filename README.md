@@ -21,5 +21,5 @@ python dqn.py --mode=<train or test or random> --env_name=<open-ai gym's Atari e
 ## env_name
 Default game is 'Breakout-v0' but you can play other games of Atari. Let's pick up from https://gym.openai.com/envs#atari.
 
-- Breakout-v0
+### Breakout-v0
 ![top-page](dqn-atari-bv0.png)
