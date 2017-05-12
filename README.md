@@ -9,10 +9,13 @@ a practice imprimentation of dqn with open-ai gym.
 - numpy
 
 # how to use
-'''
+```
 python dqn.py --mode=<train or test or random>
-'''
+```
 
 - train: train Deep Q-Network
 - test: test using trained parameters
 - random: playing random
+
+# gym
+default game is atari.
