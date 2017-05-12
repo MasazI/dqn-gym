@@ -49,6 +49,7 @@ flags.DEFINE_string("mode", "test", "<train>, <test>, <random>")
 flags.DEFINE_string("train_dir", "models/%s" % FLAGS.env_name, "directory path to save trained model")
 flags.DEFINE_string("summary_dir", "summary/%s" % FLAGS.env_name, "directory path to save summary")
 
+flags.DEFINE_float('gpu_memory_fraction', 0.2, 'gpu memory fraction.')
 
 class Agent():
     def __init__(self, num_actions):
@@ -87,7 +88,8 @@ class Agent():
         # train_op
         self.a, self.y, self.loss, self.grad_update = self.build_training_op(q_network_weights)
 
-        self.sess = tf.InteractiveSession()
+        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=FLAGS.gpu_memory_fraction)
+        self.sess = tf.InteractiveSession(config=tf.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options))
         self.saver = tf.train.Saver(q_network_weights)
         self.summary_placeholders, self.update_ops, self.summary_op = self.setup_summary()
         self.summary_writer = tf.summary.FileWriter(FLAGS.summary_dir, self.sess.graph)
