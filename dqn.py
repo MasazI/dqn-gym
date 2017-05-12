@@ -45,7 +45,7 @@ flags.DEFINE_integer("no_op_steps", 30, "maximum number of nothing actions")
 flags.DEFINE_integer("test_step_number", 30, "number of episodes at test")
 
 flags.DEFINE_boolean("load_network", False, "load network")
-flags.DEFINE_string("mode", "train", "<train>, <test>, <random>")
+flags.DEFINE_string("mode", "test", "<train>, <test>, <random>")
 flags.DEFINE_string("train_dir", "models/%s" % FLAGS.env_name, "directory path to save trained model")
 flags.DEFINE_string("summary_dir", "summary/%s" % FLAGS.env_name, "directory path to save summary")
 
@@ -191,6 +191,20 @@ class Agent():
         self.t += 1
         return action
 
+    def get_action_at_test(self, state):
+        action = self.repeated_action
+
+        if self.t % FLAGS.action_interval == 0:
+            if random.random() <= 0.05:
+                action = random.randrange(self.num_actions)
+            else:
+                action = np.argmax(self.q_values.eval(feed_dict={self.s: [np.float32(state / 255.0)]}))
+            self.repeated_action = action
+
+        self.t += 1
+
+        return action
+
     def get_action(self, state):
         action = self.repeated_action
 
@@ -237,6 +251,7 @@ class Agent():
 
             # Update target network
             if self.t % FLAGS.t_update_interval == 0:
+                self.sess.run(self.update_target_network)
                 self.sess.run(self.update_target_network)
 
             # Save network
@@ -348,7 +363,20 @@ def train(env, agent):
 
 
 def test(env, agent):
-    pass
+    for _ in range(FLAGS.test_step_number):
+        terminal = False
+        observation = env.reset()
+        for _ in range(random.randint(1, FLAGS.no_op_steps)):
+            last_observation = observation
+            observation, _, _, _ = env.step(0)  # Do nothing
+        state = agent.get_initial_state(observation, last_observation)
+        while not terminal:
+            last_observation = observation
+            action = agent.get_action_at_test(state)
+            observation, _, terminal, _ = env.step(action)
+            env.render()
+            processed_observation = preprocess(observation, last_observation)
+            state = np.append(state[1:, :, :], processed_observation, axis=0)
 
 
 def test_random(env, agent):
