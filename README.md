@@ -10,7 +10,7 @@ a practice imprimentation of dqn with open-ai gym.
 
 # how to use
 ```
-python dqn.py --mode=<train or test or random>
+python dqn.py --mode=<train or test or random> --env_name=<open-ai gym's Atari environment name>
 ```
 
 - train: train Deep Q-Network
@@ -18,4 +18,7 @@ python dqn.py --mode=<train or test or random>
 - random: playing random
 
 # gym
-default game is atari.
+Default game is 'Breakout-v0' but you can play other games of Atari. Let's pick up from https://gym.openai.com/envs#atari.
+
+- Breakout-v0
+![top-page](dqn-atari-bv0.png)
