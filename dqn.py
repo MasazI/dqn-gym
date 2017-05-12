@@ -180,7 +180,7 @@ class Agent():
     @staticmethod
     def get_initial_state(observation, last_observation):
         processed_observation = np.maximum(observation, last_observation)
-        processed_observation = np.uint8(resize(rgb2gray(processed_observation), (FLAGS.frame_width, FLAGS.frame_height)) * 255)
+        processed_observation = np.uint8(resize(rgb2gray(processed_observation), (FLAGS.frame_width, FLAGS.frame_height), mode='constant') * 255)
         state = [processed_observation for _ in range(FLAGS.state_length)]
         return np.stack(state, axis=0)
 
@@ -338,7 +338,7 @@ class Agent():
 
 def preprocess(observation, last_observation):
     processed_observation = np.maximum(observation, last_observation)
-    processed_observation = np.uint8(resize(rgb2gray(processed_observation), (FLAGS.frame_width, FLAGS.frame_height)) * 255)
+    processed_observation = np.uint8(resize(rgb2gray(processed_observation), (FLAGS.frame_width, FLAGS.frame_height), mode='constant') * 255)
     return np.reshape(processed_observation, (1, FLAGS.frame_width, FLAGS.frame_height))
 
 
